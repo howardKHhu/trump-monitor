@@ -52,7 +52,12 @@
       "Bash(curl -s \"http://localhost:8000/api/posts?lang=zh-TW&limit=5\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/static/favicon.svg)",
       "Bash(gh --version)",
-      "Bash(cloudflared --version)"
+      "Bash(cloudflared --version)",
+      "WebFetch(domain:rollcall.com)",
+      "WebFetch(domain:factba.se)",
+      "Bash(curl -s \"https://rollcall.com/wp-json/factbase/v1/twitter?page=1\")",
+      "Bash(curl -s \"https://rollcall.com/wp-json/factbase/v1/truth-social?page=1\")",
+      "Bash(curl -s \"https://rollcall.com/wp-json/factbase/v1/twitter?platform=truth-social&page=1\")"
     ]
   }
 }
