@@ -16,9 +16,25 @@ echo " Trump Truth Social Monitor - Setup"
 echo "======================================"
 
 # 1. 系統更新 & 安裝依賴
-echo "[1/6] 更新系統套件..."
+echo "[1/7] 更新系統套件..."
 sudo apt-get update -qq
 sudo apt-get install -y -qq python3 python3-pip python3-venv git nginx certbot python3-certbot-nginx curl
+
+# 1b. 建立 2GB Swap（E2.1.Micro 只有 1GB RAM，加 Swap 防止 OOM）
+echo "[1b/7] 設定 Swap 空間..."
+if [ ! -f /swapfile ]; then
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+  # 降低 swappiness，減少不必要的 swap 使用
+  echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+  sudo sysctl -p
+  echo "  Swap 已建立：$(free -h | grep Swap)"
+else
+  echo "  Swap 已存在，跳過"
+fi
 
 # 2. 複製程式碼
 echo "[2/6] 下載程式碼..."
@@ -54,7 +70,7 @@ Type=simple
 User=ubuntu
 WorkingDirectory=${APP_DIR}
 Environment="DATA_DIR=/data/trump-monitor"
-ExecStart=${APP_DIR}/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+ExecStart=${APP_DIR}/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 1 --limit-concurrency 20
 Restart=always
 RestartSec=5
 
