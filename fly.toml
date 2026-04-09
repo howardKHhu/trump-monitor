@@ -1,0 +1,27 @@
+app = "trump-truth-monitor"   # 改成你想要的名稱
+primary_region = "nrt"        # 東京節點，亞洲用戶最快
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DATA_DIR = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false   # 保持長期運行，不讓背景輪詢中斷
+  auto_start_machines = true
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[[mounts]]
+  source = "truth_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

@@ -1,0 +1,24 @@
+# 敏感資料
+.env
+.ts_session.json
+
+# 資料庫（不上傳，部署後在 volume 產生）
+*.db
+*.db-shm
+*.db-wal
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
