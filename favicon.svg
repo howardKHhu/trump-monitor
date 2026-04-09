@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#e9533a"/>
+  <!-- Satellite dish -->
+  <circle cx="32" cy="30" r="16" stroke="white" stroke-width="3" fill="none" opacity="0.3"/>
+  <circle cx="32" cy="30" r="10" stroke="white" stroke-width="3" fill="none" opacity="0.5"/>
+  <circle cx="32" cy="30" r="4" fill="white"/>
+  <!-- Signal waves -->
+  <path d="M32 30 L44 18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="44" cy="18" r="2.5" fill="white"/>
+  <!-- Live dot -->
+  <circle cx="50" cy="14" r="5" fill="#5ecf5e"/>
+  <circle cx="50" cy="14" r="5" fill="#5ecf5e" opacity="0.4">
+    <animate attributeName="r" values="5;8;5" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0;0.4" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>
