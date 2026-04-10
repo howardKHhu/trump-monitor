@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#0f0f0f"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#e9533a"/>
+      <stop offset="100%" stop-color="#ff7c5c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Top accent bar -->
+  <rect width="1200" height="6" fill="url(#accent)"/>
+
+  <!-- Live dot -->
+  <circle cx="96" cy="320" r="14" fill="#22c55e" opacity="0.9"/>
+  <circle cx="96" cy="320" r="22" fill="#22c55e" opacity="0.25"/>
+
+  <!-- Live label -->
+  <text x="124" y="328" font-family="Arial, sans-serif" font-size="28" font-weight="700"
+        fill="#22c55e" letter-spacing="3">LIVE</text>
+
+  <!-- Main title -->
+  <text x="96" y="240" font-family="Arial, 'PingFang TC', sans-serif" font-size="72" font-weight="800"
+        fill="#ffffff">川普 Truth Social</text>
+  <text x="96" y="318" font-family="Arial, 'PingFang TC', sans-serif" font-size="72" font-weight="800"
+        fill="url(#accent)">即時監控</text>
+
+  <!-- Subtitle -->
+  <text x="96" y="410" font-family="Arial, sans-serif" font-size="32" fill="#aaaaaa">
+    @realDonaldTrump · 繁體中文 &amp; 日本語 翻譯
+  </text>
+
+  <!-- Bottom domain -->
+  <text x="96" y="560" font-family="Arial, monospace, sans-serif" font-size="26"
+        fill="#555555">trump-monitor.pages.dev</text>
+
+  <!-- Decorative right element -->
+  <text x="980" y="360" font-family="serif" font-size="180" fill="#e9533a" opacity="0.08">T</text>
+</svg>

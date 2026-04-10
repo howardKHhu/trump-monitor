@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trump-monitor.pages.dev/sitemap.xml

@@ -7,24 +7,42 @@
   <!-- ── Primary SEO ── -->
   <title>川普 Truth Social 即時監控｜繁體中文翻譯</title>
   <meta name="description" content="即時追蹤川普在 Truth Social 上的最新發文，自動翻譯成繁體中文與日文，支援關鍵字與日期搜尋。Trump @realDonaldTrump posts translated to Traditional Chinese and Japanese." />
-  <meta name="keywords" content="川普, Trump, Truth Social, 即時監控, 繁體中文翻譯, realDonaldTrump, 川普發文, トランプ" />
+  <meta name="keywords" content="川普, Trump, Truth Social, 即時監控, 繁體中文翻譯, realDonaldTrump, 川普發文, トランプ, 川普推文, 川普最新消息" />
   <meta name="robots" content="index, follow" />
+  <meta name="author" content="trump-monitor" />
+  <link rel="canonical" href="https://trump-monitor.pages.dev/" />
+
+  <!-- ── hreflang（雙語） ── -->
+  <link rel="alternate" hreflang="zh-TW" href="https://trump-monitor.pages.dev/" />
+  <link rel="alternate" hreflang="ja"    href="https://trump-monitor.pages.dev/" />
+  <link rel="alternate" hreflang="x-default" href="https://trump-monitor.pages.dev/" />
 
   <!-- ── Open Graph ── -->
   <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://trump-monitor.pages.dev/" />
   <meta property="og:title"       content="川普 Truth Social 即時監控｜繁體中文翻譯" />
-  <meta property="og:description" content="即時追蹤川普在 Truth Social 上的最新發文，自動翻譯成繁體中文與日文。" />
+  <meta property="og:description" content="即時追蹤川普在 Truth Social 上的最新發文，自動翻譯成繁體中文與日文，支援關鍵字與日期搜尋。" />
+  <meta property="og:image"       content="https://trump-monitor.pages.dev/og-image.svg" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:locale"      content="zh_TW" />
+  <meta property="og:locale:alternate" content="ja_JP" />
 
   <!-- ── Twitter Card ── -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content="川普 Truth Social 即時監控｜繁體中文翻譯" />
   <meta name="twitter:description" content="即時追蹤川普在 Truth Social 上的最新發文，自動翻譯成繁體中文與日文。" />
+  <meta name="twitter:image"       content="https://trump-monitor.pages.dev/og-image.svg" />
 
   <!-- ── Favicon ── -->
   <link rel="icon"           type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon"                    href="favicon.svg" />
   <meta name="theme-color" content="#e9533a" />
+
+  <!-- ── Preconnect（加速首次 API 連線） ── -->
+  <link rel="preconnect" href="https://rollcall.com" />
+  <link rel="preconnect" href="https://api.mymemory.translated.net" />
+  <link rel="preconnect" href="https://translate.googleapis.com" />
 
   <!-- ── Structured Data ── -->
   <script type="application/ld+json">
@@ -32,8 +50,14 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "川普 Truth Social 即時監控",
+    "url": "https://trump-monitor.pages.dev/",
     "description": "即時追蹤川普在 Truth Social 上的最新發文，自動翻譯成繁體中文與日文",
-    "inLanguage": ["zh-TW", "ja"]
+    "inLanguage": ["zh-TW", "ja"],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://trump-monitor.pages.dev/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
   }
   </script>
 
