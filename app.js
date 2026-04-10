@@ -64,7 +64,43 @@
   }
 
   // ── 翻譯 ─────────────────────────────────────────────────────────────────
-  // 翻譯佇列：一次一篇，避免超出 MyMemory 速率限制
+  const GT_API = 'https://translate.googleapis.com/translate_a/single';
+  const GT_LANG = lang === 'ja' ? 'ja' : 'zh-TW';
+
+  // Google Translate 非官方 API（fallback）
+  async function translateGoogle(text) {
+    const url = `${GT_API}?client=gtx&sl=en&tl=${GT_LANG}&dt=t&q=${encodeURIComponent(text.slice(0, 500))}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    // 回應格式：[ [ ["translated","original",...], ... ], ... ]
+    return data[0].map(seg => seg[0]).join('');
+  }
+
+  // MyMemory API（primary）
+  async function translateMyMemory(text) {
+    const url = `${TRANSLATE_API}?q=${encodeURIComponent(text.slice(0, 500))}&langpair=${MM_LANG}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    const result = data?.responseData?.translatedText || '';
+    // MyMemory 額度用盡時回傳警告訊息
+    if (!result || result.toUpperCase().includes('MYMEMORY WARNING')) throw new Error('quota');
+    return result;
+  }
+
+  // 翻譯 fallback 鏈：MyMemory → Google Translate → 原文
+  async function translateWithFallback(text) {
+    try {
+      return await translateMyMemory(text);
+    } catch {
+      try {
+        return await translateGoogle(text);
+      } catch {
+        return text;
+      }
+    }
+  }
+
+  // 翻譯佇列：一次一篇，避免超出速率限制
   const translateQueue = [];
   let isTranslating = false;
 
@@ -76,14 +112,11 @@
       const cached = cacheGet(id);
       if (cached) { onDone(cached); continue; }
       try {
-        const url = `${TRANSLATE_API}?q=${encodeURIComponent(text.slice(0, 500))}&langpair=${MM_LANG}`;
-        const res  = await fetch(url);
-        const data = await res.json();
-        const translated = data?.responseData?.translatedText || text;
+        const translated = await translateWithFallback(text);
         cacheSet(id, translated);
         onDone(translated);
       } catch {
-        onDone(text); // 翻譯失敗就顯示原文
+        onDone(text);
       }
       await new Promise(r => setTimeout(r, 150)); // 避免打太快
     }
