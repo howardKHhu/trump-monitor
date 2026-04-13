@@ -135,6 +135,7 @@
   let totalPages   = 1;
   let totalHits    = 0;
   let debounceTimer = null;
+  let lastLoadTime  = null;
 
   // ── 工具 ─────────────────────────────────────────────────────────────────
   function stripHtml(html) {
@@ -262,7 +263,8 @@
 
       statusBadge.className   = 'badge badge-live';
       statusBadge.textContent = t('live');
-      lastUpdated.textContent = `${t('updated')} ${timeAgo(new Date().toISOString())}`;
+      lastLoadTime = new Date();
+      lastUpdated.textContent = `${t('updated')} ${timeAgo(lastLoadTime.toISOString())}`;
 
     } catch (e) {
       container.innerHTML = `<div class="state-msg"><span class="icon">⚠️</span>${t('error')}<br><small>${e.message}</small></div>`;
@@ -294,6 +296,13 @@
   nextBtn.addEventListener('click', () => {
     if (currentPage < totalPages) { currentPage++; loadPosts(); scrollTo({ top: 0, behavior: 'smooth' }); }
   });
+
+  // 每秒更新「更新於 X 秒前」顯示
+  setInterval(() => {
+    if (lastLoadTime) {
+      lastUpdated.textContent = `${t('updated')} ${timeAgo(lastLoadTime.toISOString())}`;
+    }
+  }, 1000);
 
   // 每 3 分鐘自動刷新第一頁
   setInterval(() => {
