@@ -111,8 +111,43 @@
 
   <!-- ── Main ── -->
   <main>
+    <div id="taco-scoreboard" class="taco-scoreboard">
+      <div class="taco-scoreboard-header" id="taco-sb-toggle">
+        <span>🌮 TACO 追蹤器</span>
+        <span id="taco-sb-arrow">▶</span>
+      </div>
+      <div class="taco-scoreboard-body" id="taco-sb-body" style="display:none">
+        <div class="taco-stats">
+          <div class="taco-stat">
+            <span class="taco-stat-num" id="sb-candidates">0</span>
+            <span class="taco-stat-label">候選威脅</span>
+          </div>
+          <div class="taco-stat">
+            <span class="taco-stat-num" id="sb-confirmed">0</span>
+            <span class="taco-stat-label">確認食言</span>
+          </div>
+          <div class="taco-stat">
+            <span class="taco-stat-num" id="sb-rate">-</span>
+            <span class="taco-stat-label">TACO 率</span>
+          </div>
+        </div>
+        <div class="taco-list-btns">
+          <button class="btn-secondary" id="sb-show-candidates">查看候選清單</button>
+          <button class="btn-secondary" id="sb-show-confirmed">查看確認清單</button>
+        </div>
+        <div id="taco-list-panel" class="taco-list-panel" style="display:none"></div>
+      </div>
+    </div>
+
     <div class="search-bar">
       <input type="text" id="search-input" placeholder="搜尋關鍵字..." autocomplete="off" />
+      <div class="shortcut-row">
+        <button class="shortcut-btn" data-query="tariff OR sanction OR ban OR deadline OR warning">🌮 TACO模式</button>
+        <button class="shortcut-btn" data-query="tariff">💣 關稅威脅</button>
+        <button class="shortcut-btn" data-query="sanction">⚠️ 制裁</button>
+        <button class="shortcut-btn" data-query="ban">🚫 禁令</button>
+        <button class="shortcut-btn" data-query="deadline">🔥 最後期限</button>
+      </div>
       <div class="date-row">
         <label id="label-from">從</label>
         <input type="date" id="date-from" />
