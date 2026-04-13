@@ -584,6 +584,14 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cur
 .toast-success { border-color: #3a6a3a; color: #7de07d; }
 .toast-error   { border-color: #6a2a2a; color: #f07070; }
 
+/* ── AdSense ── */
+.ad-unit {
+  display: block;
+  margin-bottom: 14px;
+  min-height: 90px;
+  background: transparent;
+}
+
 /* ── Responsive ── */
 @media (max-width: 540px) {
   header { padding: 12px 14px; }
