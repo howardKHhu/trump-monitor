@@ -36,6 +36,14 @@
     '100%','200%','terminate','cut off','trade war',
   ];
   const TACO_NS = 'trump_taco_v1';
+  const AUTO_CANDIDATE_DAYS = 7;
+  const RETREAT_KEYWORDS = [
+    'deal', 'agreement', 'exemption', 'delay', 'paused', 'pause',
+    'postpone', 'postponed', 'extension', 'waiver', 'relief',
+    'suspended', 'suspend', 'exception', 'backs down', 'backing down',
+    'walked back', 'reversal', 'great relationship', 'negotiations',
+    'no longer', 'not going', 'decided not',
+  ];
 
   function isTacoCandidate(text) {
     const lower = text.toLowerCase();
@@ -44,12 +52,67 @@
 
   function getTacoData() {
     try {
-      return JSON.parse(localStorage.getItem(TACO_NS) || '{"candidates":{},"confirmed":{}}');
-    } catch { return { candidates: {}, confirmed: {} }; }
+      const d = JSON.parse(localStorage.getItem(TACO_NS) || '{}');
+      return {
+        candidates: d.candidates || {},
+        confirmed:  d.confirmed  || {},
+        alerted:    d.alerted    || {},
+      };
+    } catch { return { candidates: {}, confirmed: {}, alerted: {} }; }
   }
 
   function saveTacoData(data) {
     try { localStorage.setItem(TACO_NS, JSON.stringify(data)); } catch {}
+  }
+
+  // 方案一：超過 AUTO_CANDIDATE_DAYS 天未處理的威脅貼文 → 自動候選
+  function checkAutoCandidate(post, text) {
+    if (!isTacoCandidate(text)) return;
+    const data = getTacoData();
+    const postId = post.document_id;
+    if (data.candidates[postId] || data.confirmed[postId]) return;
+    const daysSince = (Date.now() - new Date(post.date)) / 86400000;
+    if (daysSince >= AUTO_CANDIDATE_DAYS) {
+      data.candidates[postId] = {
+        text: text.slice(0, 50),
+        markedAt: new Date().toISOString(),
+        auto: true,
+      };
+      saveTacoData(data);
+      updateScoreboard();
+    }
+  }
+
+  // 方案二：新貼文含退縮關鍵字 → 提示使用者確認相關候選
+  function checkRetreatSignals(posts) {
+    const data = getTacoData();
+    if (Object.keys(data.candidates).length === 0) return;
+
+    const newAlerts = posts.filter(post => {
+      if (data.alerted[post.document_id]) return false;
+      const lower = (post.text || '').toLowerCase();
+      return RETREAT_KEYWORDS.some(kw => lower.includes(kw));
+    });
+
+    if (!newAlerts.length) return;
+
+    newAlerts.forEach(post => { data.alerted[post.document_id] = true; });
+    saveTacoData(data);
+    showRetreatBanner(newAlerts.length);
+  }
+
+  function showRetreatBanner(count) {
+    const banner = document.getElementById('retreat-banner');
+    if (!banner) return;
+    document.getElementById('retreat-banner-count').textContent = count;
+    banner.style.display = 'flex';
+    // 展開計分板方便使用者查看
+    const body = document.getElementById('taco-sb-body');
+    const arrow = document.getElementById('taco-sb-arrow');
+    if (body && body.style.display === 'none') {
+      body.style.display = 'block';
+      if (arrow) arrow.textContent = '▼';
+    }
   }
 
   // ── API ───────────────────────────────────────────────────────────────────
@@ -230,6 +293,7 @@
 
       container.appendChild(card);
       renderTacoActions(post.document_id, text);
+      checkAutoCandidate(post, text);
 
       // 非同步翻譯，完成後更新 DOM
       const transEl = document.getElementById(`trans-${post.document_id}`);
@@ -250,14 +314,18 @@
     const data = getTacoData();
     const isConfirmed = !!data.confirmed[postId];
     const isCandidate = !!data.candidates[postId];
+    const isAuto = isCandidate && !!data.candidates[postId].auto;
     const safe = rawText.slice(0, 50).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
     if (isConfirmed) {
       el.innerHTML = `<span class="taco-status confirmed">✅ 已確認 TACO</span>`;
     } else {
+      const candidateLabel = isCandidate
+        ? (isAuto ? '🤖 自動候選' : '已標記候選')
+        : '標記候選';
       el.innerHTML = `
-        <button class="taco-btn${isCandidate ? ' active' : ''}" onclick="tacoMarkCandidate('${postId}','${safe}')">
-          🌮 ${isCandidate ? '已標記候選' : '標記候選'}
+        <button class="taco-btn${isCandidate ? ' active' : ''}${isAuto ? ' auto' : ''}" onclick="tacoMarkCandidate('${postId}','${safe}')">
+          🌮 ${candidateLabel}
         </button>
         <button class="taco-btn confirm" onclick="tacoConfirm('${postId}','${safe}')">
           ✅ 確認 TACO
@@ -347,6 +415,11 @@
 
       renderPosts(posts);
       renderPagination();
+
+      // 方案二：只在第一頁、無搜尋條件時偵測退縮訊號
+      if (currentPage === 1 && !searchInput.value.trim()) {
+        checkRetreatSignals(posts);
+      }
 
       statusBadge.className   = 'badge badge-live';
       statusBadge.textContent = t('live');

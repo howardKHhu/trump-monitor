@@ -111,6 +111,11 @@
 
   <!-- ── Main ── -->
   <main>
+    <div id="retreat-banner" class="retreat-banner" style="display:none">
+      <span>⚠️ 偵測到 <strong id="retreat-banner-count">0</strong> 篇新貼文含疑似食言訊號，建議查看 TACO 候選清單</span>
+      <button class="retreat-banner-close" onclick="document.getElementById('retreat-banner').style.display='none'">✕</button>
+    </div>
+
     <div id="taco-scoreboard" class="taco-scoreboard">
       <div class="taco-scoreboard-header" id="taco-sb-toggle">
         <span>🌮 TACO 追蹤器</span>
