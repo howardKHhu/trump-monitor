@@ -28,6 +28,30 @@
     return s;
   };
 
+  // ── TACO ─────────────────────────────────────────────────────────────────
+  const TACO_KEYWORDS = [
+    'tariff','tariffs','sanction','sanctions','ban','banned',
+    'will be','must','deadline','ultimatum','warning',
+    'tax','taxes','impose','imposed','threat','threatens',
+    '100%','200%','terminate','cut off','trade war',
+  ];
+  const TACO_NS = 'trump_taco_v1';
+
+  function isTacoCandidate(text) {
+    const lower = text.toLowerCase();
+    return TACO_KEYWORDS.some(kw => lower.includes(kw));
+  }
+
+  function getTacoData() {
+    try {
+      return JSON.parse(localStorage.getItem(TACO_NS) || '{"candidates":{},"confirmed":{}}');
+    } catch { return { candidates: {}, confirmed: {} }; }
+  }
+
+  function saveTacoData(data) {
+    try { localStorage.setItem(TACO_NS, JSON.stringify(data)); } catch {}
+  }
+
   // ── API ───────────────────────────────────────────────────────────────────
   const FACTBASE_API  = 'https://rollcall.com/wp-json/factbase/v1/twitter';
   const TRANSLATE_API = 'https://api.mymemory.translated.net/get';
@@ -188,19 +212,24 @@
       card.className = 'post-card';
       card.dataset.id = post.document_id;
 
+      const isTaco = isTacoCandidate(text);
+
       // 先顯示原文，之後逐步翻譯
       card.innerHTML = `
         <div class="post-meta">
           <span class="post-time">${formatTime(post.date)}</span>
+          ${isTaco ? `<span class="taco-indicator" title="⚠️ TACO 候選：偵測到強硬措辭">🌮</span>` : ''}
           <a class="post-link" href="${post.post_url}" target="_blank" rel="noopener">${t('openLink')} ↗</a>
         </div>
         <div class="post-translated" id="trans-${post.document_id}">${text}</div>
         <details class="post-original">
           <summary>${t('viewOrig')}</summary>
           <p>${text}</p>
-        </details>`;
+        </details>
+        <div class="taco-actions" id="taco-actions-${post.document_id}"></div>`;
 
       container.appendChild(card);
+      renderTacoActions(post.document_id, text);
 
       // 非同步翻譯，完成後更新 DOM
       const transEl = document.getElementById(`trans-${post.document_id}`);
@@ -213,6 +242,64 @@
       }
     });
   }
+
+  // ── TACO 操作 ─────────────────────────────────────────────────────────────
+  function renderTacoActions(postId, rawText) {
+    const el = document.getElementById(`taco-actions-${postId}`);
+    if (!el) return;
+    const data = getTacoData();
+    const isConfirmed = !!data.confirmed[postId];
+    const isCandidate = !!data.candidates[postId];
+    const safe = rawText.slice(0, 50).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+    if (isConfirmed) {
+      el.innerHTML = `<span class="taco-status confirmed">✅ 已確認 TACO</span>`;
+    } else {
+      el.innerHTML = `
+        <button class="taco-btn${isCandidate ? ' active' : ''}" onclick="tacoMarkCandidate('${postId}','${safe}')">
+          🌮 ${isCandidate ? '已標記候選' : '標記候選'}
+        </button>
+        <button class="taco-btn confirm" onclick="tacoConfirm('${postId}','${safe}')">
+          ✅ 確認 TACO
+        </button>`;
+    }
+  }
+
+  function updateScoreboard() {
+    const data = getTacoData();
+    const cCount = Object.keys(data.candidates).length;
+    const fCount = Object.keys(data.confirmed).length;
+    const total = cCount + fCount;
+    const rate = total > 0 ? ((fCount / total) * 100).toFixed(1) + '%' : '-';
+    const elC = document.getElementById('sb-candidates');
+    const elF = document.getElementById('sb-confirmed');
+    const elR = document.getElementById('sb-rate');
+    if (elC) elC.textContent = cCount;
+    if (elF) elF.textContent = fCount;
+    if (elR) elR.textContent = rate;
+  }
+
+  window.tacoMarkCandidate = function(postId, text) {
+    const data = getTacoData();
+    if (data.confirmed[postId]) return;
+    if (data.candidates[postId]) {
+      delete data.candidates[postId];
+    } else {
+      data.candidates[postId] = { text, markedAt: new Date().toISOString() };
+    }
+    saveTacoData(data);
+    renderTacoActions(postId, text);
+    updateScoreboard();
+  };
+
+  window.tacoConfirm = function(postId, text) {
+    const data = getTacoData();
+    delete data.candidates[postId];
+    data.confirmed[postId] = { text, confirmedAt: new Date().toISOString() };
+    saveTacoData(data);
+    renderTacoActions(postId, text);
+    updateScoreboard();
+  };
 
   // ── 分頁 ─────────────────────────────────────────────────────────────────
   function renderPagination() {
@@ -285,8 +372,66 @@
 
   clearBtn.addEventListener('click', () => {
     searchInput.value = dateFrom.value = dateTo.value = '';
+    document.querySelectorAll('.shortcut-btn').forEach(b => b.classList.remove('active'));
     currentPage = 1;
     loadPosts();
+  });
+
+  // 計分板收合
+  document.getElementById('taco-sb-toggle').addEventListener('click', () => {
+    const body = document.getElementById('taco-sb-body');
+    const arrow = document.getElementById('taco-sb-arrow');
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    arrow.textContent = open ? '▶' : '▼';
+  });
+
+  // 查看清單
+  let currentList = null;
+  function showTacoList(type) {
+    const panel = document.getElementById('taco-list-panel');
+    if (currentList === type) {
+      panel.style.display = 'none';
+      currentList = null;
+      return;
+    }
+    currentList = type;
+    const data = getTacoData();
+    const entries = Object.entries(data[type]);
+    if (!entries.length) {
+      panel.innerHTML = `<p class="taco-list-empty">尚無資料</p>`;
+    } else {
+      panel.innerHTML = entries.map(([id, item]) => {
+        const dateStr = new Date(item.markedAt || item.confirmedAt).toLocaleString('zh-TW');
+        return `<div class="taco-list-item">
+          <span class="taco-list-text">${item.text}</span>
+          <span class="taco-list-date">${dateStr}</span>
+        </div>`;
+      }).join('');
+    }
+    panel.style.display = 'block';
+  }
+
+  document.getElementById('sb-show-candidates').addEventListener('click', () => showTacoList('candidates'));
+  document.getElementById('sb-show-confirmed').addEventListener('click', () => showTacoList('confirmed'));
+
+  // 啟動時更新計分板
+  updateScoreboard();
+
+  document.querySelectorAll('.shortcut-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.dataset.query;
+      const isActive = btn.classList.contains('active');
+      document.querySelectorAll('.shortcut-btn').forEach(b => b.classList.remove('active'));
+      if (isActive) {
+        searchInput.value = '';
+      } else {
+        btn.classList.add('active');
+        searchInput.value = q;
+      }
+      currentPage = 1;
+      loadPosts();
+    });
   });
 
   prevBtn.addEventListener('click', () => {
