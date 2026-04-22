@@ -8,4 +8,9 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://trump-monitor.pages.dev/"/>
     <xhtml:link rel="alternate" hreflang="ja"    href="https://trump-monitor.pages.dev/"/>
   </url>
+  <url>
+    <loc>https://trump-monitor.pages.dev/privacy.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
