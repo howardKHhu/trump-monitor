@@ -2,6 +2,16 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (() => {
+      const githubHost = 'howardkhhu.github.io';
+      const cloudflareUrl = 'https://trump-monitor.pages.dev';
+      if (location.hostname.toLowerCase() !== githubHost) return;
+
+      const path = location.pathname.replace(/^\/trump-monitor\/?/, '/');
+      location.replace(`${cloudflareUrl}${path}${location.search}${location.hash}`);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- ── Primary SEO ── -->
