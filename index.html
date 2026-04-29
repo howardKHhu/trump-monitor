@@ -2,6 +2,16 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
+  <!-- GitHub Pages → Cloudflare Pages 重導向 -->
+  <script>
+    (() => {
+      const githubHost = 'howardkhhu.github.io';
+      const cloudflareUrl = 'https://trump-monitor.pages.dev';
+      if (location.hostname.toLowerCase() !== githubHost) return;
+      const path = location.pathname.replace(/^\/trump-monitor\/?/, '/');
+      location.replace(`${cloudflareUrl}${path}${location.search}${location.hash}`);
+    })();
+  </script>
   <!-- 防止主題切換閃爍（FOUC）：在 CSS 載入前先套用儲存的主題 -->
   <script>
     if (localStorage.getItem('trump_theme') === 'light') {
