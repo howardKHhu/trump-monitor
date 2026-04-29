@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>關於本站｜川普最新發文即時翻譯 Truth Social 繁體中文</title>
+  <meta name="description" content="了解川普 Truth Social 即時翻譯網站的設立理念、TACO 追蹤器的運作方式、資料來源說明，以及如何解讀川普的強硬措辭。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://trump-monitor.pages.dev/about.html" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#e9533a" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="article" />
+  <meta property="og:url"         content="https://trump-monitor.pages.dev/about.html" />
+  <meta property="og:title"       content="關於本站｜川普最新發文即時翻譯" />
+  <meta property="og:description" content="了解 TACO 追蹤器的設計理念與川普發文的解讀方法。" />
+  <meta property="og:image"       content="https://trump-monitor.pages.dev/og-image.svg" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-content {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 16px 80px;
+    }
+    .about-content h1 {
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .about-content .lead {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .about-content h2 {
+      font-size: 1.15rem;
+      color: var(--accent2);
+      margin: 36px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .about-content h3 {
+      font-size: 0.98rem;
+      color: var(--text);
+      margin: 20px 0 8px;
+      font-weight: 600;
+    }
+    .about-content p {
+      font-size: 0.93rem;
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 14px;
+    }
+    .about-content ul, .about-content ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+    .about-content li {
+      font-size: 0.93rem;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+    .about-content a { color: var(--accent2); }
+    .about-content a:hover { text-decoration: underline; }
+    .about-content strong { color: var(--text); }
+    .about-content .highlight-box {
+      background: var(--surface2);
+      border-left: 3px solid #ff6b35;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+    }
+    .about-content .highlight-box p {
+      margin-bottom: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .about-content .case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 12px 0;
+    }
+    .about-content .case-card .case-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .about-content .case-card .case-threat {
+      font-size: 0.88rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .about-content .case-card .case-result {
+      font-size: 0.82rem;
+      color: #5ecf5e;
+    }
+    .about-content .case-card .case-result.taco {
+      color: #ff6b35;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .faq-a {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 28px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent2); }
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .toc p {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .toc ol {
+      margin-bottom: 0;
+    }
+    .toc li {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <img src="favicon.svg" alt="Logo" class="logo-img" width="36" height="36" />
+        <div>
+          <h1>川普最新發文即時翻譯</h1>
+          <p>Truth Social 繁體中文監控</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="about-content">
+    <a href="/" class="back-link">← 返回首頁</a>
+
+    <h1>關於本站</h1>
+    <p class="lead">這是一個為繁體中文與日文使用者設計的川普 Truth Social 即時監控工具。除了自動翻譯之外，本站獨創 <strong>TACO 追蹤器</strong>，系統性地記錄川普的強硬威脅是否真正落實——還是只是另一次食言退縮。</p>
+
+    <div class="toc">
+      <p>目錄</p>
+      <ol>
+        <li><a href="#why">為什麼需要這個網站</a></li>
+        <li><a href="#what-is-taco">什麼是 TACO？</a></li>
+        <li><a href="#cases">歷史案例</a></li>
+        <li><a href="#how-it-works">本站如何運作</a></li>
+        <li><a href="#how-to-use">如何使用 TACO 追蹤器</a></li>
+        <li><a href="#faq">常見問題</a></li>
+      </ol>
+    </div>
+
+    <!-- ── 為什麼需要 ── -->
+    <h2 id="why">為什麼需要這個網站</h2>
+    <p>川普自 2022 年起在 Truth Social 上頻繁發文，成為全球財經市場、外交政策與貿易局勢的重要風向球。然而，對於絕大多數的台灣、香港及海外華人讀者而言，直接追蹤英文原文存在兩個障礙：<strong>語言門檻</strong>與<strong>資訊散落</strong>。</p>
+    <p>市面上雖有大量新聞媒體報導川普的言論，但往往已經過記者的二次詮釋、取捨與延遲。本站的目標是提供<strong>第一手、未經過濾的原文翻譯</strong>，讓讀者能在最短時間內直接掌握川普的原始措辭，而非等待媒體的轉述。</p>
+    <p>尤其是在關稅、制裁、貿易戰等議題上，川普的用字遣詞往往直接影響股市與匯率走勢。「我將對中國加徵 200% 關稅」和「我們正在考慮對中國加徵關稅」之間的差異，可能在幾分鐘內反映在金融市場上。本站讓讀者能即時掌握這種語氣的細微差異。</p>
+
+    <div class="highlight-box">
+      <p>💡 本站翻譯採用多重 API 備援機制（MyMemory → Google Translate），並將翻譯結果快取於您的瀏覽器，減少重複請求。翻譯僅供參考，建議對關鍵段落對照英文原文。</p>
+    </div>
+
+    <!-- ── 什麼是 TACO ── -->
+    <h2 id="what-is-taco">什麼是 TACO？</h2>
+    <p><strong>TACO</strong> 代表「<strong>T</strong>rump <strong>A</strong>lways <strong>C</strong>hickens <strong>O</strong>ut」（川普永遠在最後退縮），是網路上用來描述川普在發出強硬威脅後、最終未予執行這一反覆行為模式的諷刺詞彙。</p>
+    <p>這個詞彙的背景源自川普執政期間的一個觀察：他習慣在社群媒體上發出極度強硬的威脅聲明（例如「最終期限」、「立即制裁」、「100% 關稅」），以製造談判壓力；但在壓力達到頂點時，往往以「達成偉大協議」為由，宣布延期、豁免或取消原本的措施。</p>
+    <p>這種模式對投資人、企業決策者和政策觀察者來說尤其重要——因為如果能識別出哪些威脅是「虛張聲勢」，就能更理性地評估風險，而不是每次都對第一手聲明過度反應。</p>
+
+    <!-- ── 歷史案例 ── -->
+    <h2 id="cases">歷史案例：威脅與食言的對比</h2>
+    <p>以下是幾個典型的 TACO 案例，說明川普如何從強硬威脅轉向退讓：</p>
+
+    <div class="case-card">
+      <div class="case-date">2018–2019 年｜美中貿易戰</div>
+      <div class="case-threat">🌮 威脅：「將對所有中國商品加徵 25% 關稅，不設例外。」多次宣布最終期限。</div>
+      <div class="case-result taco">結果：先後數次延後實施期限，並與中國達成「第一階段貿易協議」，部分關稅暫緩或取消。</div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-date">2019 年｜墨西哥關稅</div>
+      <div class="case-threat">🌮 威脅：「若墨西哥不阻止移民，將從 6 月 10 日起對所有墨西哥商品加徵 5% 關稅，並每月遞增至 25%。」</div>
+      <div class="case-result taco">結果：在關稅實施前數日，與墨西哥達成邊境安全協議，宣布無限期暫停關稅計畫。</div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-date">2025 年｜加拿大與墨西哥關稅</div>
+      <div class="case-threat">🌮 威脅：宣布對加拿大、墨西哥商品加徵 25% 關稅，設定明確生效日期。</div>
+      <div class="case-result taco">結果：生效後數日宣布給予汽車業 30 天豁免，隨後對多個類別商品給予額外緩衝期。</div>
+    </div>
+
+    <div class="case-card">
+      <div class="case-date">2025 年｜對等關稅</div>
+      <div class="case-threat">🌮 威脅：對多個國家宣布實施「對等關稅」，並設定 90 天談判期限。</div>
+      <div class="case-result">結果：持續進行中，本站持續追蹤。</div>
+    </div>
+
+    <p>這些案例的共同模式是：<strong>極端化的初始聲明 → 市場劇烈反應 → 談判壓力達到峰值 → 以「勝利」為由宣布緩和</strong>。識別這個模式，有助於更冷靜地評估每一次新威脅的真實風險。</p>
+
+    <!-- ── 如何運作 ── -->
+    <h2 id="how-it-works">本站如何運作</h2>
+
+    <h3>資料來源</h3>
+    <p>本站透過 <a href="https://rollcall.com" target="_blank" rel="noopener">Roll Call / Factbase</a> 提供的公開 API 取得川普在 Truth Social 的發文。此 API 為公開存取，本站不儲存任何貼文內容，所有資料在您的瀏覽器中即時載入顯示。</p>
+
+    <h3>翻譯機制</h3>
+    <p>每則貼文載入後，自動進入翻譯佇列，依序呼叫翻譯 API（MyMemory 為主，Google Translate 非官方介面為備援）。翻譯結果快取於您的瀏覽器 localStorage，下次瀏覽同一篇貼文時直接從快取讀取，不會重複呼叫 API。系統根據您的瀏覽器語言自動切換繁體中文或日文翻譯。</p>
+
+    <h3>TACO 偵測演算法</h3>
+    <p>每則貼文載入時，系統自動掃描英文原文，比對以下威脅關鍵字清單：</p>
+    <ul>
+      <li><strong>關稅類</strong>：tariff, tariffs, impose, imposed, 100%, 200%, trade war</li>
+      <li><strong>制裁類</strong>：sanction, sanctions, ban, banned, cut off, terminate</li>
+      <li><strong>強制語氣</strong>：will be, must, deadline, ultimatum, warning, threat, threatens</li>
+      <li><strong>稅收類</strong>：tax, taxes</li>
+    </ul>
+    <p>符合條件的貼文會標示 🌮 圖示，並自動進入候選追蹤流程。超過 7 天未處理的威脅貼文，系統會自動升級為「候選」，並在計分板顯示。</p>
+
+    <h3>退縮訊號偵測</h3>
+    <p>系統同時掃描新貼文中的「退縮關鍵字」（如 deal, agreement, exemption, delay, postpone, paused 等）。當偵測到疑似食言訊號且已有候選威脅時，頁面頂部會出現橘色提示橫幅，建議使用者查看相關候選貼文並手動確認是否為 TACO 案例。</p>
+
+    <!-- ── 如何使用 ── -->
+    <h2 id="how-to-use">如何使用 TACO 追蹤器</h2>
+    <ol>
+      <li><strong>瀏覽貼文</strong>：首頁列出最新 20 則 Truth Social 貼文，每 3 分鐘自動刷新。</li>
+      <li><strong>識別威脅貼文</strong>：含威脅關鍵字的貼文會在時間旁顯示 🌮 圖示。</li>
+      <li><strong>標記候選</strong>：點擊貼文底部的「🌮 標記候選」按鈕，將此威脅加入追蹤清單。</li>
+      <li><strong>確認食言</strong>：當日後確認川普並未執行該威脅，點擊「✅ 確認 TACO」完成記錄。</li>
+      <li><strong>查看統計</strong>：頁面頂部的 TACO 追蹤器面板顯示候選數、確認數與 TACO 率。</li>
+      <li><strong>搜尋快捷鍵</strong>：使用搜尋列上方的快捷按鈕，快速篩選關稅威脅、制裁、禁令或最後期限相關貼文。</li>
+    </ol>
+    <p>所有標記資料僅儲存於您的瀏覽器本機（localStorage），重新整理頁面後仍會保留，但換裝置或清除瀏覽器資料後會重置。</p>
+
+    <!-- ── FAQ ── -->
+    <h2 id="faq">常見問題</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：本站的翻譯準確嗎？</div>
+      <div class="faq-a">本站翻譯由機器自動完成，適合快速掌握大意，但對於涉及法律、金融或政策的關鍵段落，建議對照英文原文閱讀。每則貼文底部的「英文原文」可展開查看。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：資料更新頻率如何？</div>
+      <div class="faq-a">首頁每 3 分鐘自動刷新一次（僅在第一頁、無搜尋條件時）。您也可以重新整理頁面手動更新。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：為什麼有些貼文沒有 🌮 圖示？</div>
+      <div class="faq-a">🌮 圖示僅在貼文原文包含預設威脅關鍵字時顯示。部分措辭較隱晦的威脅可能未被系統自動偵測，您仍可手動點擊「標記候選」。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：本站是否儲存我的個人資料？</div>
+      <div class="faq-a">不會。本站為純前端靜態網站，不設任何後端伺服器。您的 TACO 標記與翻譯快取僅儲存在您自己的瀏覽器 localStorage，本站無法存取。詳見<a href="/privacy.html">隱私權政策</a>。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：本站與川普或 Truth Social 有任何官方關聯嗎？</div>
+      <div class="faq-a">完全沒有。本站為獨立第三方工具，僅讀取公開 API 資料，與川普本人、Truth Social 平台或任何政治組織均無關聯。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：我可以在 TACO 確認後取消嗎？</div>
+      <div class="faq-a">目前版本的「確認 TACO」為單向操作，確認後無法透過介面取消。若需重置，可清除瀏覽器 localStorage 中的 <code>trump_taco_v1</code> 項目。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q：為什麼要用 TACO 這個詞？</div>
+      <div class="faq-a">TACO（Trump Always Chickens Out）是英語網路社群在觀察川普談判風格後創造的諷刺縮寫，描述他反覆發出強硬威脅後又退讓的行為模式。本站使用此詞彙作為追蹤框架，無意對任何政治立場表達支持或反對。</div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-about">
+        <p class="footer-title">🌮 川普最新發文即時翻譯</p>
+        <p class="footer-desc">本站即時抓取川普 @realDonaldTrump 在 Truth Social 的發文並翻譯成繁體中文，內建 TACO 追蹤器記錄威脅是否落實。</p>
+      </div>
+      <div class="footer-links">
+        <a href="/">首頁</a>
+        <a href="/about.html">關於本站</a>
+        <a href="/privacy.html">隱私權政策</a>
+        <a href="https://github.com/howardKHhu/trump-monitor" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="footer-copy">© 2025 trump-monitor．本站與川普或 Truth Social 無任何關聯．資料來源：<a href="https://rollcall.com" target="_blank" rel="noopener">Roll Call / Factbase</a></p>
+    </div>
+  </footer>
+</body>
+</html>
