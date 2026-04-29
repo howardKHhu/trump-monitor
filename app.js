@@ -529,6 +529,30 @@
     }
   }, 3 * 60 * 1000);
 
+  // ── 主題切換 ──────────────────────────────────────────────────────────────
+  const themeToggle = $('theme-toggle');
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      themeToggle.textContent = '☀️';
+      themeToggle.title = '切換暗色模式';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeToggle.textContent = '🌙';
+      themeToggle.title = '切換亮色模式';
+    }
+  }
+
+  // 初始化：讀取已儲存的偏好
+  applyTheme(localStorage.getItem('trump_theme') || 'dark');
+
+  themeToggle.addEventListener('click', () => {
+    const isDark = !document.documentElement.hasAttribute('data-theme');
+    const next = isDark ? 'light' : 'dark';
+    localStorage.setItem('trump_theme', next);
+    applyTheme(next);
+  });
+
   // ── 啟動 ─────────────────────────────────────────────────────────────────
   loadPosts();
 })();

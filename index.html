@@ -2,6 +2,12 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
+  <!-- 防止主題切換閃爍（FOUC）：在 CSS 載入前先套用儲存的主題 -->
+  <script>
+    if (localStorage.getItem('trump_theme') === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- ── Primary SEO ── -->
@@ -109,6 +115,7 @@
       <div class="header-meta">
         <span id="status-badge" class="badge badge-loading">載入中</span>
         <span id="last-updated" class="last-updated"></span>
+        <button id="theme-toggle" class="btn-token" aria-label="切換主題" title="切換亮色／暗色模式">🌙</button>
       </div>
     </div>
   </header>

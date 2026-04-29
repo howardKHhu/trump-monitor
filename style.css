@@ -14,6 +14,24 @@
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+[data-theme="light"] {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface2: #eef0f5;
+  --accent: #e9533a;
+  --accent2: #d4401f;
+  --text: #1a1d27;
+  --text-muted: #5a6070;
+  --border: #d8dce8;
+  --new: #d4edda;
+}
+
+/* Smooth theme transition */
+body { transition: background 0.2s, color 0.2s; }
+header, .post-card, .search-bar, .taco-scoreboard,
+.skeleton, .pagination button, .modal, .site-footer,
+.site-intro, .retreat-banner { transition: background 0.2s, border-color 0.2s; }
+
 
 body {
   background: var(--bg);
