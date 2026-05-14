@@ -409,25 +409,37 @@
   }
 
   async function fetchOneFeed(feed) {
-    const url = `${RSS_PROXY}?url=${encodeURIComponent(feed.url)}&count=30`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.status !== 'ok') return [];
-    return data.items
-      .filter(item => {
-        const text = `${item.title} ${item.description || ''}`.toLowerCase();
-        return NEWS_FILTER_KW.some(kw => text.includes(kw));
-      })
-      .map(item => ({
-        id:    newsItemId(item),
-        title: item.title.trim(),
-        desc:  stripHtml(item.description || '').slice(0, 160),
-        link:  item.link,
-        date:  new Date(item.pubDate).toISOString(),
-        source: feed.id,
-        label:  feed.label,
-        color:  feed.color,
-      }));
+    try {
+      const url = `${RSS_PROXY}?url=${encodeURIComponent(feed.url)}&count=30`;
+      const res = await fetch(url);
+      if (!res.ok) {
+        console.warn(`[news] ${feed.label} proxy HTTP ${res.status}`);
+        return [];
+      }
+      const data = await res.json();
+      if (data.status !== 'ok') {
+        console.warn(`[news] ${feed.label} feed error:`, data.message);
+        return [];
+      }
+      return data.items
+        .filter(item => {
+          const text = `${item.title} ${item.description || ''}`.toLowerCase();
+          return NEWS_FILTER_KW.some(kw => text.includes(kw));
+        })
+        .map(item => ({
+          id:    newsItemId(item),
+          title: item.title.trim(),
+          desc:  stripHtml(item.description || '').slice(0, 160),
+          link:  item.link,
+          date:  (() => { try { return new Date(item.pubDate).toISOString(); } catch { return new Date().toISOString(); } })(),
+          source: feed.id,
+          label:  feed.label,
+          color:  feed.color,
+        }));
+    } catch (err) {
+      console.warn(`[news] ${feed.label} fetch failed:`, err.message);
+      return [];
+    }
   }
 
   function renderSourceFilters(items) {
@@ -517,7 +529,9 @@
     }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (!unique.length) {
-      container.innerHTML = `<div class="state-msg"><span class="icon">⚠️</span>新聞載入失敗，請稍後再試</div>`;
+      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      const hint = isLocal ? '（本地開發環境不支援新聞代理，請至 trump-monitor.pages.dev 測試）' : '（請開啟開發者工具查看 console 錯誤）';
+      container.innerHTML = `<div class="state-msg"><span class="icon">⚠️</span>新聞載入失敗，請稍後再試<br><small style="opacity:.6">${hint}</small></div>`;
       return;
     }
 
