@@ -617,6 +617,106 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cur
 .toast-success { border-color: #3a6a3a; color: #7de07d; }
 .toast-error   { border-color: #6a2a2a; color: #f07070; }
 
+/* ── Tabs ── */
+.tab-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.tab-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn:hover { border-color: var(--accent2); color: var(--text); }
+.tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── News ── */
+.news-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.news-source-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.news-src-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.news-src-btn:hover { border-color: var(--src-color, var(--accent)); color: var(--src-color, var(--accent)); }
+.news-src-btn.active { background: var(--src-color, var(--accent)); border-color: var(--src-color, var(--accent)); color: #fff; }
+
+.news-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.news-cache-info { font-size: 0.75rem; color: var(--text-muted); }
+
+.news-refresh {
+  font-size: 0.78rem;
+  padding: 5px 12px;
+}
+
+.news-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.news-card:hover { border-color: #3e4470; }
+
+.news-source-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.news-title {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.55;
+  margin: 10px 0 6px;
+}
+
+.news-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
 /* ── AdSense ── */
 .ad-unit {
   display: block;
@@ -704,4 +804,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cur
   .taco-list-btns .btn-secondary { width: 100%; }
   .site-footer { padding: 24px 14px; }
   .footer-links { gap: 14px; }
+  .tab-btn { padding: 7px 14px; font-size: 0.82rem; }
+  .news-card { padding: 14px; }
+  .news-meta-row { flex-direction: column; align-items: flex-start; }
 }

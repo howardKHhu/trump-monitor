@@ -136,6 +136,15 @@
       <p>即時追蹤川普 @realDonaldTrump 在 Truth Social 的最新發文，每則自動翻譯成<strong>繁體中文</strong>。內建 <strong>TACO 追蹤器</strong>，自動偵測關稅、制裁、禁令等強硬威脅，記錄川普是否真的執行或最終食言退縮。<a href="/about.html">了解更多 →</a></p>
     </div>
 
+    <!-- ── Tab 切換 ── -->
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="truthsocial">📡 Truth Social</button>
+      <button class="tab-btn" data-tab="news">📰 國際新聞</button>
+    </div>
+
+    <!-- ── Truth Social Tab ── -->
+    <div id="tab-content-truthsocial">
+
     <div id="retreat-banner" class="retreat-banner" style="display:none">
       <span>⚠️ 偵測到 <strong id="retreat-banner-count">0</strong> 篇新貼文含疑似食言訊號，建議查看 TACO 候選清單</span>
       <button class="retreat-banner-close" onclick="document.getElementById('retreat-banner').style.display='none'">✕</button>
@@ -209,6 +218,20 @@
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+    </div><!-- /tab-content-truthsocial -->
+
+    <!-- ── News Tab ── -->
+    <div id="tab-content-news" style="display:none">
+      <div class="news-toolbar">
+        <div class="news-source-filters" id="news-source-filters"></div>
+        <div class="news-meta-row">
+          <span id="news-cache-info" class="news-cache-info"></span>
+          <button id="news-refresh-btn" class="btn-secondary news-refresh">🔄 重新整理</button>
+        </div>
+      </div>
+      <div id="news-container"></div>
+    </div><!-- /tab-content-news -->
 
   </main>
 
