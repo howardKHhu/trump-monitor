@@ -116,7 +116,7 @@
   }
 
   // ── 新聞 RSS ──────────────────────────────────────────────────────────────
-  const RSS2JSON_API   = 'https://api.rss2json.com/v1/api.json';
+  const RSS_PROXY      = '/rss-proxy'; // Cloudflare Pages Function
   const NEWS_CACHE_NS  = 'trump_news_cache_v1';
   const NEWS_TRANS_NS  = 'trump_news_trans_v1';
   const NEWS_CACHE_TTL = 30 * 60 * 1000; // 30 分鐘
@@ -409,7 +409,7 @@
   }
 
   async function fetchOneFeed(feed) {
-    const url = `${RSS2JSON_API}?rss_url=${encodeURIComponent(feed.url)}&count=30`;
+    const url = `${RSS_PROXY}?url=${encodeURIComponent(feed.url)}&count=30`;
     const res = await fetch(url);
     const data = await res.json();
     if (data.status !== 'ok') return [];
