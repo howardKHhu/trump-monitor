@@ -115,6 +115,24 @@
     }
   }
 
+  // ── 新聞 RSS ──────────────────────────────────────────────────────────────
+  const RSS2JSON_API   = 'https://api.rss2json.com/v1/api.json';
+  const NEWS_CACHE_NS  = 'trump_news_cache_v1';
+  const NEWS_TRANS_NS  = 'trump_news_trans_v1';
+  const NEWS_CACHE_TTL = 30 * 60 * 1000; // 30 分鐘
+
+  const RSS_FEEDS = [
+    { id: 'bbc',      label: 'BBC',      url: 'https://feeds.bbci.co.uk/news/world/us_canada/rss.xml', color: '#bb1919' },
+    { id: 'guardian', label: 'Guardian', url: 'https://www.theguardian.com/us-news/trump/rss',         color: '#005689' },
+    { id: 'npr',      label: 'NPR',      url: 'https://feeds.npr.org/1001/rss.xml',                    color: '#00876c' },
+    { id: 'fox',      label: 'Fox News', url: 'https://moxie.foxnews.com/google-publisher/politics.xml', color: '#c8352b' },
+  ];
+
+  const NEWS_FILTER_KW = [
+    'trump', 'donald', 'tariff', 'white house', 'executive order',
+    'mar-a-lago', 'maga', 'oval office', 'melania', 'ivanka',
+  ];
+
   // ── API ───────────────────────────────────────────────────────────────────
   const FACTBASE_API  = 'https://rollcall.com/wp-json/factbase/v1/twitter';
   const TRANSLATE_API = 'https://api.mymemory.translated.net/get';
@@ -369,6 +387,146 @@
     updateScoreboard();
   };
 
+  // ── 新聞功能 ──────────────────────────────────────────────────────────────
+  let activeSourceFilter = null; // null = 全部
+
+  function getNewsCache() {
+    try {
+      const d = JSON.parse(localStorage.getItem(NEWS_CACHE_NS) || 'null');
+      if (!d || Date.now() - d.timestamp > NEWS_CACHE_TTL) return null;
+      return d;
+    } catch { return null; }
+  }
+
+  function setNewsCache(items) {
+    try {
+      localStorage.setItem(NEWS_CACHE_NS, JSON.stringify({ timestamp: Date.now(), items }));
+    } catch {}
+  }
+
+  function newsItemId(item) {
+    return (item.guid || item.link || item.title).replace(/\W/g, '_').slice(0, 60);
+  }
+
+  async function fetchOneFeed(feed) {
+    const url = `${RSS2JSON_API}?rss_url=${encodeURIComponent(feed.url)}&count=30`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.status !== 'ok') return [];
+    return data.items
+      .filter(item => {
+        const text = `${item.title} ${item.description || ''}`.toLowerCase();
+        return NEWS_FILTER_KW.some(kw => text.includes(kw));
+      })
+      .map(item => ({
+        id:    newsItemId(item),
+        title: item.title.trim(),
+        desc:  stripHtml(item.description || '').slice(0, 160),
+        link:  item.link,
+        date:  new Date(item.pubDate).toISOString(),
+        source: feed.id,
+        label:  feed.label,
+        color:  feed.color,
+      }));
+  }
+
+  function renderSourceFilters(items) {
+    const el = document.getElementById('news-source-filters');
+    if (!el) return;
+    const sources = [...new Set(items.map(i => i.source))];
+    el.innerHTML = sources.map(src => {
+      const feed = RSS_FEEDS.find(f => f.id === src);
+      return `<button class="news-src-btn${activeSourceFilter === src ? ' active' : ''}"
+        data-src="${src}" style="--src-color:${feed.color}">${feed.label}</button>`;
+    }).join('');
+    el.querySelectorAll('.news-src-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeSourceFilter = activeSourceFilter === btn.dataset.src ? null : btn.dataset.src;
+        const cached = getNewsCache();
+        if (cached) renderNewsList(cached.items);
+      });
+    });
+  }
+
+  function renderNewsList(items) {
+    const container = document.getElementById('news-container');
+    const filtered = activeSourceFilter ? items.filter(i => i.source === activeSourceFilter) : items;
+    // Re-render source filter buttons with updated active state
+    const filtersEl = document.getElementById('news-source-filters');
+    if (filtersEl) {
+      filtersEl.querySelectorAll('.news-src-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.src === activeSourceFilter);
+      });
+    }
+    if (!filtered.length) {
+      container.innerHTML = `<div class="state-msg"><span class="icon">📰</span>找不到相關新聞</div>`;
+      return;
+    }
+    container.innerHTML = '';
+    filtered.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      card.innerHTML = `
+        <div class="post-meta">
+          <span class="news-source-badge" style="background:${item.color}">${item.label}</span>
+          <span class="post-time">${formatTime(item.date)}</span>
+          <a class="post-link" href="${item.link}" target="_blank" rel="noopener">${t('openLink')} ↗</a>
+        </div>
+        <div class="news-title" id="ntrans-${item.id}">${item.title}</div>
+        ${item.desc ? `<p class="news-desc">${item.desc}</p>` : ''}`;
+      container.appendChild(card);
+
+      const el = document.getElementById(`ntrans-${item.id}`);
+      if (el) {
+        el.style.opacity = '0.5';
+        enqueueTranslation(item.title, `${NEWS_TRANS_NS}:${item.id}`, translated => {
+          el.textContent = translated;
+          el.style.opacity = '1';
+        });
+      }
+    });
+  }
+
+  async function loadNews(forceRefresh = false) {
+    const container = document.getElementById('news-container');
+    const cacheInfo = document.getElementById('news-cache-info');
+
+    if (!forceRefresh) {
+      const cached = getNewsCache();
+      if (cached) {
+        const mins = Math.floor((Date.now() - cached.timestamp) / 60000);
+        if (cacheInfo) cacheInfo.textContent = `快取於 ${mins} 分鐘前`;
+        renderSourceFilters(cached.items);
+        renderNewsList(cached.items);
+        return;
+      }
+    }
+
+    container.innerHTML = `<div class="state-msg"><span class="icon">📰</span>載入新聞中...</div>`;
+    if (cacheInfo) cacheInfo.textContent = '';
+
+    const results = await Promise.allSettled(RSS_FEEDS.map(fetchOneFeed));
+    const all = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
+
+    // 去重（以連結為 key）
+    const seen = new Set();
+    const unique = all.filter(item => {
+      if (seen.has(item.link)) return false;
+      seen.add(item.link);
+      return true;
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (!unique.length) {
+      container.innerHTML = `<div class="state-msg"><span class="icon">⚠️</span>新聞載入失敗，請稍後再試</div>`;
+      return;
+    }
+
+    setNewsCache(unique);
+    if (cacheInfo) cacheInfo.textContent = '剛剛更新';
+    renderSourceFilters(unique);
+    renderNewsList(unique);
+  }
+
   // ── 分頁 ─────────────────────────────────────────────────────────────────
   function renderPagination() {
     if (totalPages <= 1) { pagination.style.display = 'none'; return; }
@@ -487,6 +645,21 @@
 
   document.getElementById('sb-show-candidates').addEventListener('click', () => showTacoList('candidates'));
   document.getElementById('sb-show-confirmed').addEventListener('click', () => showTacoList('confirmed'));
+
+  // ── Tab 切換 ─────────────────────────────────────────────────────────────
+  let newsLoaded = false;
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-content-truthsocial').style.display = tab === 'truthsocial' ? 'block' : 'none';
+      document.getElementById('tab-content-news').style.display        = tab === 'news'         ? 'block' : 'none';
+      if (tab === 'news' && !newsLoaded) { newsLoaded = true; loadNews(); }
+    });
+  });
+
+  document.getElementById('news-refresh-btn')?.addEventListener('click', () => loadNews(true));
 
   // 啟動時更新計分板
   updateScoreboard();
